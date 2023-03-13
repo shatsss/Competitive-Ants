@@ -11,7 +11,6 @@ random.seed(1997)
 np.random.seed(1997)
 
 
-
 def heuristic_runner(player, game_mode):
     global_iteration_number = 0
     ###

@@ -6,8 +6,8 @@ import numpy as np
 from environment.Graph import Graph
 from players.HeuristicFunctions.StcPlayer import StcPlayer
 
-random.seed(1)
-np.random.seed(2)
+random.seed(1997)
+np.random.seed(1997)
 
 
 def get_new_obstacle_location(grid_size, obstacles_list):

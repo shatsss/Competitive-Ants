@@ -16,8 +16,9 @@ np.random.seed(1997)
 
 
 def rl_runner(robot_type):
+    print("Start")
     # hyper-params
-    test_mode = False
+    test_mode = True
     window_size = 3
     discount_factor_options = [0.99, 0.5]
     game_mode = "FCC"
@@ -30,6 +31,10 @@ def rl_runner(robot_type):
     number_of_epoch_configurations = [0, 1, 2]
     # end of hyper-params
 
+    if test_mode:
+        print("Test Mode")
+    else:
+        print("Train Mode")
     global_iteration_number = 0
     ###
     # 0 - T(2)-T(1)
@@ -62,7 +67,7 @@ def rl_runner(robot_type):
                 folder_path = path_prefix + "window_size-" + str(
                     window_size) + "/" + game_mode + "/" + grid_type + "/" + reward_type + "/" + str(grid_size) + "/"
                 if test_mode:
-                    number_of_runs = 1000
+                    number_of_runs = 500
                 else:
                     number_of_runs = 10000
                 for epoch_number in number_of_epoch_configurations:  # The different number of models
@@ -114,7 +119,6 @@ def rl_runner(robot_type):
                                                                                game_mode=game_mode,
                                                                                global_iteration_number=global_iteration_number,
                                                                                window_size=window_size)
-                        print(scores)
                         if test_mode and sum(scores) != free_cells:
                             raise Exception()
 
