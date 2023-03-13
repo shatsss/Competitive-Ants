@@ -46,7 +46,6 @@ def heuristic_runner(player, game_mode):
                                                                              obstacles_list=obstacles_list,
                                                                              update_frequency=None,
                                                                              test_mode=True,
-                                                                             animate=False,
                                                                              game_mode=game_mode,
                                                                              global_iteration_number=global_iteration_number)
             if sum(scores) != number_of_free_cells:
