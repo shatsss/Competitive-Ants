@@ -17,9 +17,9 @@ class QLearningRobot(AbstractPlayer):
 
     def create_state(self, current_location, opponent_location, graph, game_mode):
         if game_mode == "FCC":
-            world = graph.who_visited_first
+            world = np.copy(graph.who_visited_first)
         elif game_mode == "LCC":
-            world = graph.who_visited_last
+            world = np.copy(graph.who_visited_last)
         else:
             raise Exception()
         # set ours and opponent robots current locations

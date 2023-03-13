@@ -38,10 +38,10 @@ class Graph:
         self.visited_cells_per_player[id_of_player][location] = id_of_player
 
     def get_first_player_who_visited_the_cell(self, location):
-        return self.who_visited_first[location]
+        return np.copy(self.who_visited_first[location])
 
     def get_last_player_who_visited_the_cell(self, location):
-        return self.who_visited_last[location]
+        return np.copy(self.who_visited_last[location])
 
     def is_cell_have_been_visited_by_player(self, location, player_id):
         return player_id in self.visited_cells_per_player.keys() and self.visited_cells_per_player[player_id][

@@ -108,17 +108,17 @@ def rl_runner(robot_type):
                     with open(file_name, "rb") as fp:
                         initial_locations = pickle.load(fp)
                     for i in range(0, int(number_of_runs)):
-                        scores, free_cells, global_iteration_number = simulate(grid_size, players_list,
-                                                                               i,
-                                                                               initial_locations[i],
-                                                                               opponent_reward_function=reward_function,
-                                                                               obstacles_list=obstacles_list,
-                                                                               update_frequency=25,
-                                                                               test_mode=test_mode,
-                                                                               game_mode=game_mode,
-                                                                               global_iteration_number=global_iteration_number,
-                                                                               window_size=window_size)
-                        if test_mode and sum(scores) != free_cells:
+                        scores, number_of_free_cells, global_iteration_number = simulate(grid_size, players_list,
+                                                                                         i,
+                                                                                         initial_locations[i],
+                                                                                         opponent_reward_function=reward_function,
+                                                                                         obstacles_list=obstacles_list,
+                                                                                         update_frequency=25,
+                                                                                         test_mode=test_mode,
+                                                                                         game_mode=game_mode,
+                                                                                         global_iteration_number=global_iteration_number,
+                                                                                         window_size=window_size)
+                        if test_mode and (sum(scores) != number_of_free_cells):
                             raise Exception()
 
                         if scores[0] < scores[1]:
@@ -127,7 +127,7 @@ def rl_runner(robot_type):
                             configuration_number_of_draws += 1
                         else:
                             configuration_number_of_loses += 1
-                        configuration_fcc_results += [scores[1] / free_cells]
+                        configuration_fcc_results += [scores[1] / number_of_free_cells]
 
                     if not test_mode:
                         save_model_to_file(file_path, players_list, robot_type)

@@ -119,7 +119,7 @@ def get_reward(scores, previous_scores, opponent_reward_function, player_1_cell_
         elif player_1_cell_visited_last_value == 2:
             return BAD_REWARD
         else:
-            raise Exception()
+            raise Exception(str(player_1_cell_visited_last_value) + " is not valid")
     # fcc_local_reward
     elif opponent_reward_function == 3:
         if player_1_cell_visited_last_value == 0:
