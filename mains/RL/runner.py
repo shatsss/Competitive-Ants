@@ -17,7 +17,7 @@ np.random.seed(1997)
 
 def rl_runner(robot_type):
     # hyper-params
-    test_mode = False
+    test_mode = True
     window_size = 3
     discount_factor_options = [0.99, 0.5]
     game_mode = "FCC"
@@ -114,7 +114,6 @@ def rl_runner(robot_type):
                                                                                game_mode=game_mode,
                                                                                global_iteration_number=global_iteration_number,
                                                                                window_size=window_size)
-                        print(scores)
                         if test_mode and sum(scores) != free_cells:
                             raise Exception()
 
