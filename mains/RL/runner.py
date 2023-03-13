@@ -115,7 +115,6 @@ def rl_runner(robot_type):
                                                                                obstacles_list=obstacles_list,
                                                                                update_frequency=25,
                                                                                test_mode=test_mode,
-                                                                               animate=False,
                                                                                game_mode=game_mode,
                                                                                global_iteration_number=global_iteration_number,
                                                                                window_size=window_size)
