@@ -1,5 +1,4 @@
-This project requires :
-
+This project requires:
 1. matplotlib==3.6.2
 2. numpy==1.24.1
 3. tensorflow==2.11.0
@@ -13,5 +12,5 @@ We have three different environments. 0-obstacles-free, 1-obstacles1 and 2-obsta
 In addition, the robot_id of the opponent is 1 and ours is 2. The opponent robot runs the STC algorithm without knowing
 it competes.
 
-In order to create different obstacles environments, run obstacles/obstacles_creator.py file.
-In order to create different initial locations, run initial_locations/initial_locations_creator.py file.
+In order to create different initial locations, first, run obstacles/obstacles_creator.py file in order to create
+obstacles, then run initial_locations/initial_locations_creator.py file.

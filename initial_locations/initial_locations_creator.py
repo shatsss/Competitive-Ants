@@ -26,7 +26,7 @@ def main():
 
 if __name__ == '__main__':
     grid_size = 10
-    number_of_runs = 100000
+    number_of_runs = 500
     number_of_epochs = 15
-    obstacles_option = "empty_grid"
+    obstacles_option = "obstacles1"
     main()
