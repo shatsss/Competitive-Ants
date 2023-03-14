@@ -46,7 +46,7 @@ def simulate(grid_size, players_list, train_iteration_number, initial_locations,
                                                                        test_mode, train_iteration_number, window_size)
         else:
             player_1_next_location, _ = players_list[1].next_move(current_locations[1], current_locations[0],
-                                                                  next_locations[0])  # ours player
+                                                                  player_0_next_location)
         if distance(player_1_next_location, current_locations[1]) > 1:  # validation that next move is legal
             raise Exception()
 
