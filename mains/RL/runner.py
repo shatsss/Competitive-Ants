@@ -145,7 +145,7 @@ def rl_runner(robot_type):
 
 def save_model_to_file(file_path, players_list, robot_type):
     if robot_type == "DQN":
-        players_list[1].model.dqn.save(file_path)
+        players_list[1].model.dqn.save(file_path + '.h5')
     elif robot_type == "QLearning":
         with open(file_path, 'w') as f:
             json.dump(players_list[1].model.q_table, f)
