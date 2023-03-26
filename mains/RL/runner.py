@@ -71,7 +71,11 @@ def rl_runner(robot_type):
                 else:
                     number_of_runs = 10000
                 for epoch_number in number_of_epoch_configurations:  # The different number of models
-                    file_path = folder_path + "update_frequency" + str(25) + "future_factory" + str(
+                    if obstacles_option == 2:
+                        update_frequency = 40
+                    else:
+                        update_frequency = 25
+                    file_path = folder_path + "update_frequency" + str(update_frequency) + "future_factory" + str(
                         future_factory) + "random_factor" + str(5) + "lr" + str(0.001) + "epoch" + str(
                         epoch_number) + "-" + "iteration" + str(10000)
                     if test_mode:
@@ -113,7 +117,7 @@ def rl_runner(robot_type):
                                                                                          initial_locations[i],
                                                                                          opponent_reward_function=reward_function,
                                                                                          obstacles_list=obstacles_list,
-                                                                                         update_frequency=25,
+                                                                                         update_frequency=update_frequency,
                                                                                          test_mode=test_mode,
                                                                                          game_mode=game_mode,
                                                                                          global_iteration_number=global_iteration_number,
