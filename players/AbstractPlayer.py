@@ -4,6 +4,7 @@ from abc import ABC, abstractmethod
 from environment.Graph import Graph
 
 
+# manhattan  distance
 def distance(p0, p1):
     return abs(p0[0] - p1[0]) + abs(p0[1] - p1[1])
 
@@ -103,7 +104,7 @@ class AbstractPlayer(ABC):
                 next_location = (current_location[0], current_location[1] + 1)
                 return self.get_next_cell(next_location, next_location_in_same_sub_cell, id_to_look)
 
-    # return next location according to the reverse-STC algorithm
+    # returns next location according to the reverse-STC algorithm
     def run_reverse_stc(self, current_location, id_to_look):
         if current_location[0] % 2 == 0:
             if current_location[1] % 2 == 0:
