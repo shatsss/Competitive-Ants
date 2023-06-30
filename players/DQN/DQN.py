@@ -23,6 +23,7 @@ class DQN:
         self.memory = []
         self.memory_current_index = 0
 
+    # creates the architecture of the model
     def create_model(self, lr):
         model = keras.Sequential()
         model.add(keras.layers.Conv2D(32, (3, 3), padding='same', strides=1,
@@ -37,6 +38,7 @@ class DQN:
         model.compile(optimizer=optimizer, loss='mse', metrics=['mse'])
         return model
 
+    # saved transition into the memory
     def push(self, transition):
         if len(self.memory) < self.memory_size:
             self.memory.append(None)
@@ -48,6 +50,7 @@ class DQN:
         r = max((self.number_of_train_iterations - current_iteration_number * 5) / self.number_of_train_iterations, 0)
         return (self.max_epsilon - self.min_epsilon) * r + self.min_epsilon
 
+    # choose next action of a player
     def act(self, state, current_iteration_number, test_mode):
         if not test_mode and \
                 np.random.uniform(0, 1) < self.get_current_epsilon(current_iteration_number=current_iteration_number):
@@ -57,6 +60,7 @@ class DQN:
             act_values = self.dqn(expanded_state)
             return np.argmax(act_values[0])
 
+    # update the model in batches
     def update_model(self):
         minibatch = random.choices(self.memory, k=self.batch_size)
         states = np.array([i.state for i in minibatch])

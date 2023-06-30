@@ -5,6 +5,7 @@ class LccOpponent(AbstractPlayer):
     def __init__(self, id):
         super().__init__(id)
 
+    # goes to cells that visited by the opponent
     def next_move(self, current_location, opponent_current_location, opponent_next_location):
         neighbors = self.get_neighbors_of_sub_cell(current_location)
         for neighbor in neighbors:

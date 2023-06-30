@@ -4,6 +4,7 @@ from players.AbstractPlayer import AbstractPlayer, distance
 from players.QLearning.Q_table import Q_table
 
 
+# kind of robot that uses Q-Learning in order to choose the next action
 class QLearningRobot(AbstractPlayer):
     def __init__(self, player_id, number_of_train_iterations, lr, discount_factor, reconstructed_model, window_size):
         super().__init__(player_id)
@@ -15,6 +16,7 @@ class QLearningRobot(AbstractPlayer):
         return self.get_next_location_and_action_of_RL_model(self.model, current_iteration_number,
                                                              current_location, state, test_mode)
 
+    # creates input for the Q-Learning model that consists of what the robot sees in its sensing range
     def create_state(self, current_location, opponent_location, graph, game_mode):
         if game_mode == "FCC":
             world = np.copy(graph.who_visited_first)
@@ -26,7 +28,7 @@ class QLearningRobot(AbstractPlayer):
         world[current_location[0], current_location[1]] = 20
         world[opponent_location[0], opponent_location[1]] = 10
 
-        # get only information in out sensing range
+        # get only information in our sensing range
         sub_world = self.get_sub_world(current_location, world, graph, self.model.window_size)
         return np.expand_dims(sub_world, axis=2)
 

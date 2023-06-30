@@ -4,6 +4,7 @@ from players.AbstractPlayer import AbstractPlayer, distance
 from players.DQN.DQN import DQN
 
 
+# kind of robot that uses DQN in order to choose the next action
 class DQNRobot(AbstractPlayer):
     def __init__(self, player_id, number_of_train_iterations, lr, discount_factor, reconstructed_model, window_size):
         super().__init__(player_id)
@@ -14,11 +15,16 @@ class DQNRobot(AbstractPlayer):
         return self.get_next_location_and_action_of_RL_model(self.model, current_iteration_number,
                                                              current_location, state, test_mode)
 
+    # creates input for the DQN model that consists of what the robot sees in its sensing range
     def create_state(self, current_location, opponent_location, graph, game_mode):
+        # frame that consists of the players inside the sensing range
         agent_position = self.get_agents_positions_frame(current_location, opponent_location, graph,
                                                          self.model.window_size)
+        # frame that consists of the obstacles inside the sensing range
         agent_obstacles = self.get_agent_obstacles_frame(current_location, graph, self.model.window_size)
+        # frame that consists of who visited the cells first
         first_pheromones = self.get_who_visited_the_cells_first_frame(current_location, graph, self.model.window_size)
+        # frame that consists of who visited the cells last
         last_pheromones = self.get_who_visited_the_cells_last_frame(current_location, graph, self.model.window_size)
 
         return np.stack([agent_position, agent_obstacles, first_pheromones, last_pheromones], axis=-1)

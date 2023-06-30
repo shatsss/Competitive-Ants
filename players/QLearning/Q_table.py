@@ -6,6 +6,7 @@ import numpy as np
 class Q_table:
 
     def __init__(self, number_of_train_iterations, lr, discount_factor, reconstructed_model=None, window_size=None):
+        # in the test, we have a trained model
         if reconstructed_model is not None:
             self.q_table = reconstructed_model
         else:
@@ -22,6 +23,7 @@ class Q_table:
         self.memory = []
         self.memory_current_index = 0
 
+    # choose next action of a player
     def act(self, state, current_iteration_number, test_mode):
         id_of_state = self.get_id_of_state(state)
         if (not test_mode and np.random.uniform(0, 1) < self.get_current_epsilon(
@@ -30,17 +32,19 @@ class Q_table:
         else:
             return np.argmax(self.q_table[id_of_state])
 
-    # after number_of_train_iterations/5 (2000( iterations, we get an epsilon 0.
+    # after number_of_train_iterations/5 (2000( iterations, we get an epsilon 0).
     def get_current_epsilon(self, current_iteration_number):
         r = max((self.number_of_train_iterations - current_iteration_number * 5) / self.number_of_train_iterations, 0)
         return (self.max_epsilon - self.min_epsilon) * r + self.min_epsilon
 
+    # saved transition into the memory
     def push(self, transition):
         if len(self.memory) < self.memory_size:
             self.memory.append(None)
         self.memory[self.memory_current_index] = transition
         self.memory_current_index = (self.memory_current_index + 1) % self.memory_size
 
+    # update the model in batches
     def update_model(self):
         minibatch = random.choices(self.memory, k=self.batch_size)
         for transition in minibatch:
@@ -58,6 +62,10 @@ class Q_table:
                                                                self.q_table[id_of_next_state][:]) -
                                                                    self.q_table[id_of_state][transition.action])
 
+    # we have a very big number of possible states
+    # each state gets id according to the values in the frame
+    # we use a dictionary instead of a table
+    # we don't need to save states that we didn't see
     def get_id_of_state(self, state):
         res = tuple(map(tuple, state.reshape(self.window_size * 2 + 1, self.window_size * 2 + 1)))
         return self.convert_tuple_of_tuples_to_string(res)

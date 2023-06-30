@@ -2,6 +2,9 @@ import numpy as np
 from matplotlib import pyplot as plt
 
 
+# This class can draw the game
+# Blue is our player
+# Red is the opponent player
 class GraphDrawer:
     def __init__(self):
         plt.ion()

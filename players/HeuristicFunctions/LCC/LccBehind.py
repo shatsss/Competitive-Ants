@@ -5,6 +5,7 @@ class LccBehind(AbstractPlayer):
     def __init__(self, id):
         super().__init__(id)
 
+    # runs STC until the robot meets with the opponent, then, trying to be one step behind of the opponent
     def next_move(self, current_location, opponent_current_location, opponent_next_location):
         distance_to_next_cell = distance(current_location, opponent_current_location)
         if distance_to_next_cell <= 3:

@@ -11,6 +11,10 @@ random.seed(1997)
 np.random.seed(1997)
 
 
+# main heuristic algorithms class, runs different configurations (for example, different environments)
+# Per configuration, the class simulates 500 different runs
+# Per run, the class simulate a game of both players and calculates the scores of both players
+# The final result is the average scores across 500 simulations
 def heuristic_runner(player, game_mode):
     global_iteration_number = 0
     ###
@@ -19,6 +23,7 @@ def heuristic_runner(player, game_mode):
     # 2 - obstacles2
     ###
     obstacles_options = [0, 1, 2]
+    # different configurations
     for obstacles_option in obstacles_options:
         grid_size = get_grid_size(obstacles_option)
         grid_type = get_grid_type_as_string(obstacles_option)
@@ -36,8 +41,9 @@ def heuristic_runner(player, game_mode):
             number_of_runs) + "/initial_locations-0"
         with open(file_name, "rb") as fp:
             initial_locations = pickle.load(fp)
-
+        # simulates 500 runs
         for i in range(0, int(number_of_runs)):
+            # simulates specific run
             scores, number_of_free_cells, global_iteration_number = simulate(grid_size,
                                                                              players_list,
                                                                              i,
@@ -59,7 +65,7 @@ def heuristic_runner(player, game_mode):
                 number_of_loses_of_the_model += 1
 
             fcc_results_of_the_model += [scores[1] / number_of_free_cells]
-
+        # average across 500 simulations
         win_percentage_of_the_model = number_of_wins_of_the_model / number_of_runs
         draw_percentage_of_the_model = number_of_draws_of_the_model / number_of_runs
         loss_percentage_of_the_model = number_of_loses_of_the_model / number_of_runs

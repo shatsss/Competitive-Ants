@@ -13,11 +13,14 @@ from players.QLearning.QLearningRobot import QLearningRobot
 BAD_REWARD = -0.25
 
 
+# simulates a single run of the game
+
 def simulate(grid_size, players_list, train_iteration_number, initial_locations,
              opponent_reward_function, obstacles_list, update_frequency, test_mode, animate=False, game_mode=None,
              global_iteration_number=None, window_size=None):
     if animate:
         drawer = GraphDrawer()
+    # initiate graph
     graph = Graph(grid_size, obstacles_list=obstacles_list)
     for player in players_list:
         player.set_graph(graph)
@@ -26,7 +29,7 @@ def simulate(grid_size, players_list, train_iteration_number, initial_locations,
     if animate:
         drawer.add_locations(current_locations[1], current_locations[0])
     set_initial_locations_as_visited(current_locations, graph, players_list)
-
+    # initiate scores to zero
     scores = np.zeros(len(players_list))
     if current_locations[0] == current_locations[1]:
         scores += 0.5
@@ -35,10 +38,12 @@ def simulate(grid_size, players_list, train_iteration_number, initial_locations,
 
     total_number_of_iterations = graph.grid_size ** 2 - len(graph.obstacles)
     current_iteration_number = 0
-    next_locations = [None, None]
 
+    # while the game is not finished
     while current_iteration_number < total_number_of_iterations - 1:
+        # opponent player next location
         player_0_next_location = players_list[0].next_move(current_locations[0])
+        # calculate next step of player
         if isinstance(players_list[1], DQNRobot) or isinstance(players_list[1], QLearningRobot):
             state = players_list[1].create_state(current_locations[1], current_locations[0], graph, game_mode=game_mode)
             player_1_next_location, action = players_list[1].next_move(state, current_locations[1],
@@ -47,15 +52,16 @@ def simulate(grid_size, players_list, train_iteration_number, initial_locations,
         else:
             player_1_next_location, _ = players_list[1].next_move(current_locations[1], current_locations[0],
                                                                   player_0_next_location)
+        # next location calculated wrongly
         if distance(player_1_next_location, current_locations[1]) > 1:  # validation that next move is legal
             raise Exception()
-
+        # if next location is not legal finish the game
         if (isinstance(players_list[1], DQNRobot) or isinstance(players_list[1],
                                                                 QLearningRobot)) and (player_1_next_location ==
                                                                                       current_locations[
                                                                                           1] or not graph.is_cell_legal(
                     player_1_next_location)):
-            reward = -2 * (graph.grid_size ** 2)
+            reward = -2 * (graph.grid_size ** 2)  # negative reward
             if isinstance(players_list[1], DQNRobot):
                 next_state = np.full((window_size * 2 + 1, window_size * 2 + 1, 4), -100)
             elif isinstance(players_list[1], QLearningRobot):
@@ -66,8 +72,10 @@ def simulate(grid_size, players_list, train_iteration_number, initial_locations,
                 players_list[1].model.push(Transition(state, action, reward, next_state, True))
             break
 
+        # update the game and scores according to both players next location
         next_locations = [player_0_next_location, player_1_next_location]
         previous_scores = scores.copy()
+        # update scores
         update_scores(game_mode, graph, next_locations, player_0_next_location,
                       player_1_next_location, players_list, scores)
 
@@ -75,10 +83,13 @@ def simulate(grid_size, players_list, train_iteration_number, initial_locations,
             drawer.draw(game_mode=game_mode, graph=graph, next_locations=next_locations)
 
         player_1_cell_visited_last_value = graph.get_last_player_who_visited_the_cell(player_1_next_location)
+
+        # update visited cells
         both_players_visited_simultaneously = next_locations[0] == next_locations[1]
         graph.set_visited(player_0_next_location, players_list[0].get_player_id(), both_players_visited_simultaneously)
         graph.set_visited(player_1_next_location, players_list[1].get_player_id(), both_players_visited_simultaneously)
 
+        # it its train mode and RL algorithm, store in experience current transition
         if not test_mode and isinstance(players_list[1], DQNRobot) or isinstance(players_list[1], QLearningRobot):
             next_state = players_list[1].create_state(player_1_next_location, player_0_next_location, graph,
                                                       game_mode=game_mode)
@@ -96,6 +107,8 @@ def simulate(grid_size, players_list, train_iteration_number, initial_locations,
     return scores, graph.grid_size ** 2 - len(graph.obstacles), global_iteration_number
 
 
+# get reward on action
+# we have 4 types of rewards - T(2)-T(1), T(2), lcc_local_reward, fcc_local_reward
 def get_reward(scores, previous_scores, opponent_reward_function, player_1_cell_visited_last_value):
     new_scores = scores - previous_scores
     # T(2)-T(1)

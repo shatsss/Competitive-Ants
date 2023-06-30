@@ -15,12 +15,21 @@ random.seed(1997)
 np.random.seed(1997)
 
 
+# main RL class, runs different configurations (for example, different environments)
+# Per configuration, the class simulate 500 different runs
+# Per run, the class simulate a game of both players and calculates the scores of both players
+# The final result is the average scores across 500 simulations
 def rl_runner(robot_type):
     print("Start")
-    # hyper-params
+    # if test_mode is False, we train our model
+    # if test_mode is True, we test our model
     test_mode = True
+
+    # Sensing-Range of our model
     window_size = 3
+
     discount_factor_options = [0.99, 0.5]
+
     game_mode = "FCC"
     ###
     # 0 - obstacles-free
@@ -29,7 +38,6 @@ def rl_runner(robot_type):
     ###
     obstacles_options = [0, 1, 2]
     number_of_epoch_configurations = [0, 1, 2]
-    # end of hyper-params
 
     if test_mode:
         print("Test Mode")
@@ -37,6 +45,7 @@ def rl_runner(robot_type):
         print("Train Mode")
     global_iteration_number = 0
     ###
+    # Reward types
     # 0 - T(2)-T(1)
     # 1 - T(2)
     # 2 - lcc_local_reward
@@ -58,6 +67,7 @@ def rl_runner(robot_type):
         for reward_function in reward_configurations:
             reward_type = get_reward_type_as_a_string(reward_function)
             for future_factory in discount_factor_options:
+                # This class is for both Q-Learning and DQN
                 if robot_type == "DQN":
                     path_prefix = "../../../models/DQN/"
                 elif robot_type == "QLearning":
@@ -67,10 +77,14 @@ def rl_runner(robot_type):
                 folder_path = path_prefix + "window_size-" + str(
                     window_size) + "/" + game_mode + "/" + grid_type + "/" + reward_type + "/" + str(grid_size) + "/"
                 if test_mode:
+                    # In test, we run 500 simulations
                     number_of_runs = 500
                 else:
+                    # In train, we run 10000 simulations
                     number_of_runs = 10000
-                for epoch_number in number_of_epoch_configurations:  # The different number of models
+
+                # Per configuration, we trained 3 different models and averaged the results
+                for epoch_number in number_of_epoch_configurations:
                     if obstacles_option == 2:
                         update_frequency = 40
                     else:
@@ -87,6 +101,7 @@ def rl_runner(robot_type):
                             raise Exception()
                     else:
                         reconstructed_model = None
+                    # create correct robot
                     if robot_type == "DQN":
                         robot = DQNRobot(player_id=2, number_of_train_iterations=number_of_runs,
                                          lr=0.001,
@@ -105,13 +120,16 @@ def rl_runner(robot_type):
                     configuration_number_of_wins = 0
                     configuration_number_of_draws = 0
                     configuration_number_of_loses = 0
-
+                    # load initial locations
                     file_name = "../../../initial_locations/" + str(
                         grid_size) + "/" + grid_type + "/" + str(
                         number_of_runs) + "/initial_locations-" + str(epoch_number)
                     with open(file_name, "rb") as fp:
                         initial_locations = pickle.load(fp)
+
+                    # simulates 500 runs
                     for i in range(0, int(number_of_runs)):
+                        # simulates specific run
                         scores, number_of_free_cells, global_iteration_number = simulate(grid_size, players_list,
                                                                                          i,
                                                                                          initial_locations[i],
@@ -135,7 +153,7 @@ def rl_runner(robot_type):
 
                     if not test_mode:
                         save_model_to_file(file_path, players_list, robot_type)
-
+                    # average across 500 simulations
                     wins_percentage_configuration = configuration_number_of_wins / number_of_runs
                     draws_percentage_configuration = configuration_number_of_draws / number_of_runs
                     loses_percentage_configuration = configuration_number_of_loses / number_of_runs
@@ -147,6 +165,7 @@ def rl_runner(robot_type):
                             wins_percentage_configuration) + " , fcc or lcc: " + str(fcc_average_configuration))
 
 
+# learned policy saved into a file
 def save_model_to_file(file_path, players_list, robot_type):
     if robot_type == "DQN":
         players_list[1].model.dqn.save(file_path + '.h5')

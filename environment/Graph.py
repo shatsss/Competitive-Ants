@@ -3,6 +3,9 @@ import random
 import numpy as np
 
 
+# This class represents the environment
+# The cells of the environment updated according to the players actions
+
 class Graph:
     def __init__(self, grid_size, obstacles_list=None):
         self.empty_grid = np.zeros((grid_size, grid_size))
@@ -25,8 +28,7 @@ class Graph:
             if self.get_visited_value_of_cell(location) == 0:
                 self.who_visited_first[location] = 3  # 3 means that the cell visited by both players in the same time
                 self.number_of_cells_visited += 1
-
-            self.who_visited_last[location] = 3
+            self.who_visited_last[location] = 3 # both players visited the cell at the same time
         else:
             if self.get_visited_value_of_cell(location) == 0:
                 self.who_visited_first[location] = id_of_player  # we set player_id as who visited first the cell

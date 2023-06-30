@@ -23,6 +23,7 @@ class AbstractPlayer(ABC):
     def get_player_id(self):
         return self.player_id
 
+    # according to current location and action, we calculate the next location
     def get_next_location_according_to_action(self, current_location, index):
         if index == 0:
             if current_location[0] - 1 >= 0:
@@ -47,6 +48,8 @@ class AbstractPlayer(ABC):
         else:
             raise Exception()
 
+    # we assume that the grid can be separated to 2x2 big cells
+    # each big cell consists of 4 cells
     @staticmethod
     def get_cells_of_big_node(sub_node):
         if sub_node[0] % 2 == 0 and sub_node[1] % 2 == 0:
@@ -67,6 +70,7 @@ class AbstractPlayer(ABC):
                      (current_location[0], current_location[1] - 1), (current_location[0], current_location[1] + 1)]
         return list(filter(self.graph.is_cell_legal, neighbors))
 
+    # given a current location and possible next locations, the function chooses the best next location
     def get_next_cell(self, next_location, next_location_in_same_sub_cell, player_id):
         if all([self.graph.is_cell_legal(sub_node) and not self.graph.is_cell_have_been_visited_by_player(sub_node,
                                                                                                           player_id) for
@@ -77,6 +81,7 @@ class AbstractPlayer(ABC):
         else:
             return next_location_in_same_sub_cell
 
+    # return next location according to the STC algorithm
     def run_stc(self, current_location, id_to_look):
         if current_location[0] % 2 == 0:
             if current_location[1] % 2 == 0:
@@ -98,6 +103,7 @@ class AbstractPlayer(ABC):
                 next_location = (current_location[0], current_location[1] + 1)
                 return self.get_next_cell(next_location, next_location_in_same_sub_cell, id_to_look)
 
+    # return next location according to the reverse-STC algorithm
     def run_reverse_stc(self, current_location, id_to_look):
         if current_location[0] % 2 == 0:
             if current_location[1] % 2 == 0:
@@ -119,6 +125,7 @@ class AbstractPlayer(ABC):
                 next_location = (current_location[0] + 1, current_location[1])
                 return self.get_next_cell(next_location, next_location_in_same_sub_cell, id_to_look)
 
+    # returns the next location and action selected by the RL model
     def get_next_location_and_action_of_RL_model(self, rl_mode, current_iteration_number, current_location, state,
                                                  test_mode):
         action = rl_mode.act(state, current_iteration_number, test_mode)
